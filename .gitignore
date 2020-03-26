@@ -1,0 +1,7 @@
+*.qm
+*.pdf
+*.pro.user*
+*.stash
+Makefile
+debug
+release

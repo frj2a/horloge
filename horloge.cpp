@@ -16,13 +16,18 @@
 #include <QDateTime>
 #include <QDate>
 
-#define	INTERVALO_TIMER		1000
-#define OPACIDADE_GERAL		0.35
-#define OPACIDADE_DIGITOS	0.55
+#include <iostream>
 
-horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Dialog  | Qt::Tool /* | Qt::SplashScreen */ ) {
+#define	INTERVALO_TIMER		1000
+#define OPACIDADE_GERAL		0.30
+#define OPACIDADE_DIGITOS	0.40
+
+horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Dialog | Qt::Tool  /* | Qt::SplashScreen */ ) {
 	mArgC = argc;
 	mArgV = argv;
+	m_moving = false;
+	m_prevMousePos = QPoint();
+	installEventFilter(this);
 
 	utcTime = false;
 
@@ -256,6 +261,45 @@ void horloge::changeEvent(QEvent *e) {
 		break;
 	}
 }
+
+bool horloge::eventFilter(QObject *watched, QEvent *event) {
+	if (watched == this) {
+		bool result = true;
+		switch (event->type()) {
+			case QEvent::MouseButtonPress: {
+				QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+				if (mouseEvent->button() == Qt::LeftButton) {
+					m_moving = true;
+					m_prevMousePos = mouseEvent->pos();
+				}
+				break; }
+
+			case QEvent::MouseButtonRelease: {
+				QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+				if(mouseEvent->button() == Qt::LeftButton)
+					m_moving = false;
+				break; }
+
+			case QEvent::MouseMove: {
+				QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+				if (m_moving)
+					move(pos() + (mouseEvent->pos() - m_prevMousePos));
+				break; }
+
+			default:
+#ifdef _DEBUG
+				std::cout << static_cast<int>(event->type()) << std::endl;
+#endif
+				result = false;
+				break;
+
+		};
+		return result;
+	} else {
+		return QWidget::eventFilter(watched, event);
+	}
+}
+
 
 inline void horloge::translateAction(QAction * act) {
 	// prov = QApplication::translate("horloge", act->text().toStdString().c_str(), nullptr);

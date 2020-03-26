@@ -25,6 +25,7 @@ public:
 	~horloge();
 
 	QSize sizeHint() const;
+	bool eventFilter(QObject *watched, QEvent *event);
 
 private:
 	Qt::WindowFlags			mFlags;
@@ -45,6 +46,9 @@ private:
 	QAction					*action;
 	QString					prov;
 	bool					utcTime;
+	bool					m_moving;
+	QPoint					m_prevMousePos;
+
 
 private
 slots:
