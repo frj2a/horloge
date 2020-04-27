@@ -94,6 +94,7 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	mProxyWidgetHora = gsPrincipal->addWidget(mHoraDigital);
 	mProxyWidgetHora->setPos(127.0 - mProxyWidgetHora->size().width() / 2 , 127.0 + 14);
 	mProxyWidgetHora->setOpacity(OPACIDADE_DIGITOS);
+	mHoraDigital->setVisible(false);
 
 	mDataDigital = new QLabel("00.00.00");
 	// mDataDigital->setFont(QFont("LED BOARD REVERSED", 12));
@@ -102,6 +103,7 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	mProxyWidgetData = gsPrincipal->addWidget(mDataDigital);
 	mProxyWidgetData->setPos(127.0 - mProxyWidgetData->size().width() / 2 , 127.0 + 16 + mProxyWidgetHora->size().height());
 	mProxyWidgetData->setOpacity(OPACIDADE_DIGITOS);
+	mDataDigital->setVisible(false);
 
 	delete caminho;
 	caminho = new QPainterPath(QPointF(127.0 +  3.5, 127.0 + 10.0));
@@ -205,18 +207,19 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 
 	action = new QAction(tr("&Hora Digital"), action);
 	action->setCheckable(true);
-	action->setChecked(true);
+	action->setChecked(false);
 	connect(action, &QAction::toggled, this, &horloge::trocaVerHoraDigital);
 	subMenu->addAction(action);
 
 	action = new QAction(tr("&Data Digital"), action);
 	action->setCheckable(true);
-	action->setChecked(true);
+	action->setChecked(false);
 	connect(action, &QAction::toggled, this, &horloge::trocaVerDataDigital);
 	subMenu->addAction(action);
 
 	action = new QAction(tr("&Permite mover"), mTrayIcon);
 	action->setCheckable(true);
+	action->setChecked(false);
 	connect(action, &QAction::toggled, this, &horloge::trocaSensibMouse);
 	// addAction(action);
 
