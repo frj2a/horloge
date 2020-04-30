@@ -1,14 +1,14 @@
 #! /bin/bash
 if [ -e Makefile ]
 then
-    make distclean -s && \
-    rm -fR GeneratedFiles release debug *.qm
+	make distclean -s && \
+	rm -fR GeneratedFiles release debug *.qm
 fi
 QT_OTIMIZA="linux-g++"
 MAQUINA=`uname -m`
 if [ "$MAQUINA" = "x86_64" ]
 then
-        QT_OTIMIZA="linux-g++-64"
+		QT_OTIMIZA="linux-g++-64"
 fi
 echo -e - - -Compilando o programa '\033[1;33m'Horloge'\033[0m', um relógio transparente até para eventos, para a plataforma '\033[1;33m'$MAQUINA'\033[0m' ...
 
@@ -22,15 +22,15 @@ strip -s release/horloge
 rm -fR GeneratedFiles debug *.qm .qmake.stash
 if [ -e /usr/bin/doxygen ]
 then
-    doxygen Doxyfile
+	doxygen Doxyfile
 fi
 if [ -d latex ]
 then
-    cd latex
-    make
-    mv refman.pdf ..
-    cd ..
-    rm -fR latex
+	cd latex
+	make
+	mv refman.pdf ..
+	cd ..
+	rm -fR latex
 fi
 rm -f Doxyfile
 if [ -e /usr/bin/cloc ]
@@ -38,5 +38,3 @@ then
 	cloc *.cpp *.h
 fi
 echo -e - - -Finalizada a compilação do programa '\033[1;33m'Horloge'\033[0m', um relógio transparente até para eventos, para a plataforma '\033[1;33m'$MAQUINA'\033[0m' ...
-mv release/horloge ~/bin/
-make distclean

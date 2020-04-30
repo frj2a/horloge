@@ -63,7 +63,11 @@ TRANSLATIONS += \
 DISTFILES += \
     en_US.ts \
     es_ES.ts \
-    pt_BR.ts
+    pt_BR.ts \
+    build.sh \
+    distclean.sh \
+    _config.yml \
+    README.md
 
 win32:	DEFINES += _TTY_WIN_ # QWT_DLL QT_DLL
 
