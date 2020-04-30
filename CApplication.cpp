@@ -1,6 +1,6 @@
-// "$Date: 2019-11-20 00:59:23 -0300 (qua, 20 nov 2019) $"
+// "$Date: 2019-11-22 19:44:01 -0300 (sex, 22 nov 2019) $"
 // "$Author: chico $"
-// "$Revision: 158 $"
+// "$Revision: 159 $"
 
 #include "CApplication.h"
 #include <QApplication>
@@ -15,8 +15,8 @@ CApplication::CApplication(int &argc, char **argv) : QApplication(argc, argv ) {
 	// http://qt-project.org/doc/qt-4.8/qapplication.html#QApplication
 }
 
-void CApplication::setSession(QWidget * sessao)	{
-	mSessao = sessao;
+void CApplication::setSession(QWidget * session)	{
+	mSession = session;
 }
 
 void CApplication::commitData(QSessionManager& manager )	{

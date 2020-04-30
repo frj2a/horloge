@@ -38,5 +38,3 @@ then
 	cloc *.cpp *.h
 fi
 echo -e - - -Finalizada a compilação do programa '\033[1;33m'Horloge'\033[0m', um relógio transparente até para eventos, para a plataforma '\033[1;33m'$MAQUINA'\033[0m' ...
-mv release/horloge ~/bin/
-make distclean

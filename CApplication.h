@@ -1,6 +1,6 @@
-// "$Date: 2019-11-15 01:28:07 -0300 (sex, 15 nov 2019) $"
+// "$Date: 2019-11-22 19:44:01 -0300 (sex, 22 nov 2019) $"
 // "$Author: chico $"
-// "$Revision: 148 $"
+// "$Revision: 159 $"
 
 #ifndef CAPPLICATION_H
 #define CAPPLICATION_H
@@ -29,7 +29,7 @@ public:
 
 	//! \brief Para compatibilidade com a inicialização padrão no arquivo "main.c"
 	//! \param sessao Objeto principal do programa.
-	void setSession(QWidget * sessao);
+	void setSession(QWidget * session);
 
 	//! \brief Carrega as traduções para o conjunto de idiomas especificado no parâmetro fornecido.
 	//! \param dir Nome do diretório, em formato de texto, onde se encontram as traduções individuais.
@@ -48,7 +48,7 @@ public:
 	void commitData( QSessionManager &manager);
 
 private:
-	QWidget * mSessao;									//!< Objeto principal, que instancia os objetos de interface de usuário e com os dispositivos.
+	QWidget * mSession;									//!< Objeto principal, que instancia os objetos de interface de usuário e com os dispositivos.
 	static QTranslator* current;						//!< Objeto que contém a tradução em uso da interface de usuário.
 	static QHash<QString, QTranslator*> mTranslators;	//!< Objeto que contém as traduções da interface de usuário.
 
