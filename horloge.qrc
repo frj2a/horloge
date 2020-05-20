@@ -1,22 +1,25 @@
 <RCC>
-	<qresource prefix="/ico">
-		<file alias="ico">recursos/imagens/iconmonstr-time-11.svg</file>
-		<file alias="SysTray">recursos/imagens/iconmonstr-time-16.svg</file>
-		<file>recursos/imagens/iconmonstr-time-19.svg</file>
-	</qresource>
-	<qresource prefix="/traducoes">
-		<file>en_US.qm</file>
-		<file>es_ES.qm</file>
-		<file>pt_BR.qm</file>
-	</qresource>
-	<qresource prefix="/fontes">
-		<file alias="Digir___.ttf">recursos/fontes/Digir___.ttf</file>
-		<file alias="Digirc__.ttf">recursos/fontes/Digirc__.ttf</file>
-		<file alias="Digircu_.ttf">recursos/fontes/Digircu_.ttf</file>
-		<file alias="Digire__.ttf">recursos/fontes/Digire__.ttf</file>
-		<file alias="Digireu_.ttf">recursos/fontes/Digireu_.ttf</file>
-		<file alias="Digirtu_.ttf">recursos/fontes/Digirtu_.ttf</file>
-		<file alias="LEDBDREV.TTF">recursos/fontes/LEDBDREV.TTF</file>
-		<file alias="LEDBOARD.TTF">recursos/fontes/LEDBOARD.TTF</file>
-	</qresource>
+    <qresource prefix="/ico">
+        <file alias="ico">recursos/imagens/iconmonstr-time-11.svg</file>
+        <file alias="SysTray">recursos/imagens/iconmonstr-time-16.svg</file>
+        <file>recursos/imagens/iconmonstr-time-19.svg</file>
+    </qresource>
+    <qresource prefix="/traducoes">
+        <file>en_US.qm</file>
+        <file>es_ES.qm</file>
+        <file>pt_BR.qm</file>
+    </qresource>
+    <qresource prefix="/fontes">
+        <file alias="Digir___.ttf">recursos/fontes/Digir___.ttf</file>
+        <file alias="Digirc__.ttf">recursos/fontes/Digirc__.ttf</file>
+        <file alias="Digircu_.ttf">recursos/fontes/Digircu_.ttf</file>
+        <file alias="Digire__.ttf">recursos/fontes/Digire__.ttf</file>
+        <file alias="Digireu_.ttf">recursos/fontes/Digireu_.ttf</file>
+        <file alias="Digirtu_.ttf">recursos/fontes/Digirtu_.ttf</file>
+        <file alias="LEDBDREV.TTF">recursos/fontes/LEDBDREV.TTF</file>
+        <file alias="LEDBOARD.TTF">recursos/fontes/LEDBOARD.TTF</file>
+    </qresource>
+    <qresource prefix="/audio">
+        <file alias="audio.raw">recursos/audio/audio.raw</file>
+    </qresource>
 </RCC>

@@ -8,7 +8,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -61,13 +61,13 @@ TRANSLATIONS += \
 	./pt_BR.ts
 
 DISTFILES += \
-    en_US.ts \
-    es_ES.ts \
-    pt_BR.ts \
-    build.sh \
-    distclean.sh \
-    _config.yml \
-    README.md
+	en_US.ts \
+	es_ES.ts \
+	pt_BR.ts \
+	build.sh \
+	distclean.sh \
+	_config.yml \
+	README.md
 
 win32:	DEFINES += _TTY_WIN_ # QWT_DLL QT_DLL
 

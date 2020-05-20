@@ -16,6 +16,7 @@
 #include <QSystemTrayIcon>
 #include <QGraphicsPathItem>
 #include <QGraphicsProxyWidget>
+#include <QAudioOutput>
 
 class horloge : public QWidget, private Ui::horloge {
 	Q_OBJECT
@@ -41,8 +42,13 @@ private:
 	QGraphicsPathItem		* gpiSegundo;
 	QLabel					* mHoraDigital;
 	QLabel					* mDataDigital;
+	QLabel					* mDescanso;
 	QGraphicsProxyWidget	* mProxyWidgetHora;
 	QGraphicsProxyWidget	* mProxyWidgetData;
+	QGraphicsProxyWidget	* mProxyWidgetDescanso;
+	QFile					audioFile;
+	QAudioFormat			format;
+	QAudioOutput			* audio;
 	QAction					*action;
 	QString					prov;
 	bool					utcTime;
@@ -62,6 +68,7 @@ slots:
 	void trocaSensibMouse(bool estado);
 	__attribute__((noreturn)) void leave();
 	void trayAtivado(QSystemTrayIcon::ActivationReason reason);
+	void handleStateChanged(QAudio::State newState);
 
 protected:
 	void changeEvent(QEvent *e);

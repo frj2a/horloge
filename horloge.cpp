@@ -15,6 +15,7 @@
 #include <QLocale>
 #include <QDateTime>
 #include <QDate>
+#include <QString>
 
 #include <iostream>
 
@@ -48,6 +49,22 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	QFontDatabase::addApplicationFont(":/fontes/Digirtu_.ttf");
 	QFontDatabase::addApplicationFont(":/fontes/LEDBDREV.TTF");
 	QFontDatabase::addApplicationFont(":/fontes/LEDBOARD.TTF");
+
+	audioFile.setFileName(":/audio/audio.raw");
+
+	// Set up the format, eg.
+	format.setSampleRate(8000);
+	format.setChannelCount(1);
+	format.setSampleSize(8);
+	format.setCodec("audio/pcm");
+	format.setByteOrder(QAudioFormat::LittleEndian);
+	format.setSampleType(QAudioFormat::UnSignedInt);
+
+	QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
+	if (!info.isFormatSupported(format)) {
+		qWarning() << "Raw audio format not supported by backend, cannot play audio.";
+		return;
+	}
 
 	gsPrincipal = new QGraphicsScene(0, 0, 256, 256, this);
 	gvPrincipal->setScene(gsPrincipal);
@@ -86,6 +103,14 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 		marca->setOpacity(OPACIDADE_GERAL);
 		gsPrincipal->addItem(marca);
 	}
+
+	mDescanso = new QLabel("00:00");
+	mDescanso->setFont(QFont("Digital Readout Expanded", 20));
+	mDescanso->setStyleSheet("color: rgb(31, 31, 31); background-color: rgba(191, 31, 31, 127);");
+	mProxyWidgetDescanso = gsPrincipal->addWidget(mDescanso);
+	mProxyWidgetDescanso->setPos(127.0 - mProxyWidgetDescanso->size().width() / 2 , 127.0 - 28);
+	mProxyWidgetDescanso->setOpacity(OPACIDADE_DIGITOS);
+	mDescanso->setVisible(false);
 
 	mHoraDigital = new QLabel("00:00:00");
 	// mHoraDigital->setFont(QFont("LED BOARD REVERSED", 12));
@@ -291,7 +316,7 @@ bool horloge::eventFilter(QObject *watched, QEvent *event) {
 
 			default:
 #ifdef _DEBUG
-				std::cout << static_cast<int>(event->type()) << std::endl;
+				// std::cout << static_cast<int>(event->type()) << std::endl;
 #endif
 				result = false;
 				break;
@@ -436,7 +461,46 @@ void horloge::onTimer(void)	{
 #endif
 	mHoraDigital->setText(timeNow.toString("hh:mm:ss"));
 	mDataDigital->setText(dateNow.toString("dd.MM.yy"));
+
+	// if ( ( timeNow.minute() >= 50 ) && ( timeNow.minute() < 55 ) ) {
+	if (timeNow.minute() < 5) {
+		mDescanso->setVisible(true);
+		int deltaMinute = 5 - timeNow.minute();
+		int deltaSecond = 59 - timeNow.second();
+		mDescanso->setText(QString("%1:%2").arg(deltaMinute, 2, 10, QChar('0')).arg(deltaSecond, 2, 10, QChar('0')));
+		audioFile.open(QIODevice::ReadOnly);
+		audio = new QAudioOutput(format, this);
+		connect(audio, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));
+		audio->start(&audioFile);
+	} else {
+		mDescanso->setVisible(false);
+	}
 }
+
+
+void horloge::handleStateChanged(QAudio::State newState)
+{
+	switch (newState) {
+		case QAudio::IdleState:
+			// Finished playing (no more data)
+			audio->stop();
+			audioFile.close();
+			delete audio;
+			break;
+
+		case QAudio::StoppedState:
+			// Stopped for other reasons
+			if (audio->error() != QAudio::NoError) {
+				// Error handling
+			}
+			break;
+
+		default:
+			// ... other cases as appropriate
+			break;
+	}
+}
+
 
 /*
 void horloge::slotMudouIdioma(qint32 codIdioma) {
