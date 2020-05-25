@@ -1,0 +1,24 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="audio_data" version="1.3.0" audacityversion="2.3.3" sel0="0.0000000000" sel1="0.0000000000" vpos="0" h="0.0000000000" zoom="2584.0000000000" rate="44100.0" snapto="on" selectionformat="hh:mm:ss + milliseconds" frequencyformat="Hz" bandwidthformat="octaves">
+	<tags/>
+	<wavetrack name="audio" isSelected="1" height="535" minimized="0" channel="2" linked="0" mute="0" solo="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="22050">
+				<waveblock start="0">
+					<simpleblockfile filename="eff1f706.au" len="22050" min="-0.718005" max="0.719837" rms="0.294773"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="8">
+				<controlpoint t="0.000000000000" val="0.278937399387"/>
+				<controlpoint t="0.022832817337" val="0.411764681339"/>
+				<controlpoint t="0.048761609907" val="1.000000000000"/>
+				<controlpoint t="0.117260061920" val="0.597722947598"/>
+				<controlpoint t="0.195820433437" val="0.339658439159"/>
+				<controlpoint t="0.294891640867" val="0.176470577717"/>
+				<controlpoint t="0.375773993808" val="0.111954450607"/>
+				<controlpoint t="0.429566563467" val="0.077798843384"/>
+			</envelope>
+		</waveclip>
+	</wavetrack>
+</project>
