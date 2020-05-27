@@ -27,6 +27,7 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	mArgC = argc;
 	mArgV = argv;
 	m_moving = false;
+	audio = nullptr;
 	m_prevMousePos = QPoint();
 	installEventFilter(this);
 
@@ -462,10 +463,10 @@ void horloge::onTimer(void)	{
 	mHoraDigital->setText(timeNow.toString("hh:mm:ss"));
 	mDataDigital->setText(dateNow.toString("dd.MM.yy"));
 
-	// if ( ( timeNow.minute() >= 50 ) && ( timeNow.minute() < 55 ) ) {
+	// if ( ( timeNow.minute() >= 10 ) && ( timeNow.minute() < 15 ) ) {
 	if (timeNow.minute() < 5) {
 		mDescanso->setVisible(true);
-		int deltaMinute = 5 - timeNow.minute();
+		int deltaMinute = 4 - timeNow.minute();
 		int deltaSecond = 59 - timeNow.second();
 		mDescanso->setText(QString("%1:%2").arg(deltaMinute, 2, 10, QChar('0')).arg(deltaSecond, 2, 10, QChar('0')));
 		audioFile.open(QIODevice::ReadOnly);
@@ -483,7 +484,7 @@ void horloge::handleStateChanged(QAudio::State newState)
 	switch (newState) {
 		case QAudio::IdleState:
 			// Finished playing (no more data)
-			audio->stop();
+			// audio->stop();
 			audioFile.close();
 			delete audio;
 			break;
