@@ -32,6 +32,7 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	installEventFilter(this);
 
 	utcTime = false;
+	descanso = true;
 
 	setAttribute(Qt::WA_TranslucentBackground, true);
 	// setAttribute(Qt::WA_DeleteOnClose, true);
@@ -213,20 +214,14 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 
 	action = new QAction(tr("&Exibir/Ocultar"), mTrayIcon);
 	connect(action, &QAction::triggered, this, &horloge::trocaVisibilidade);
-	// addAction(action);
-
 	trayIconMenu->addAction(action);
 
 	action = new QAction(tr("&UTC"), mTrayIcon);
 	action->setCheckable(true);
 	connect(action, &QAction::toggled, this, &horloge::trocaLocalUTC);
-	// addAction(action);
-
 	trayIconMenu->addAction(action);
 
-
 	action = new QAction(tr("&Digitais"), mTrayIcon);
-	// addAction(action);
 	QMenu * subMenu = new QMenu;
 	action->setMenu(subMenu);
 	trayIconMenu->addAction(action);
@@ -242,6 +237,12 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	action->setChecked(false);
 	connect(action, &QAction::toggled, this, &horloge::trocaVerDataDigital);
 	subMenu->addAction(action);
+
+	actionDescanso = new QAction(tr("&Descanso horário"), action);
+	actionDescanso->setCheckable(true);
+	actionDescanso->setChecked(true);
+	connect(actionDescanso, &QAction::toggled, this, &horloge::trocaDescanso);
+	subMenu->addAction(actionDescanso);
 
 	action = new QAction(tr("&Permite mover"), mTrayIcon);
 	action->setCheckable(true);
@@ -399,6 +400,10 @@ void horloge::trocaLocalUTC(bool estado) {
 	onTimer();
 }
 
+void horloge::trocaDescanso(bool estado) {
+	descanso = estado;
+}
+
 void horloge::trocaVerHoraDigital(bool estado) {
 	mHoraDigital->setVisible(estado);
 }
@@ -463,18 +468,24 @@ void horloge::onTimer(void)	{
 	mHoraDigital->setText(timeNow.toString("hh:mm:ss"));
 	mDataDigital->setText(dateNow.toString("dd.MM.yy"));
 
-	// if ( ( timeNow.minute() >= 10 ) && ( timeNow.minute() < 15 ) ) {
+	// if ( ( timeNow.minute() >= 20 ) && ( timeNow.minute() < 25 ) ) {
 	if (timeNow.minute() < 5) {
-		mDescanso->setVisible(true);
-		int deltaMinute = 4 - timeNow.minute();
-		int deltaSecond = 59 - timeNow.second();
-		mDescanso->setText(QString("%1:%2").arg(deltaMinute, 2, 10, QChar('0')).arg(deltaSecond, 2, 10, QChar('0')));
-		audioFile.open(QIODevice::ReadOnly);
-		audio = new QAudioOutput(format, this);
-		connect(audio, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));
-		audio->start(&audioFile);
+		if (descanso) {
+			mDescanso->setVisible(true);
+			int deltaMinute = 5 - timeNow.minute();
+			int deltaSecond = 59 - timeNow.second();
+			mDescanso->setText(QString("%1:%2").arg(deltaMinute, 2, 10, QChar('0')).arg(deltaSecond, 2, 10, QChar('0')));
+			audioFile.open(QIODevice::ReadOnly);
+			audio = new QAudioOutput(format, this);
+			connect(audio, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));
+			audio->start(&audioFile);
+		} else {
+			mDescanso->setVisible(false);
+		}
 	} else {
 		mDescanso->setVisible(false);
+		descanso = true;
+		actionDescanso->setChecked(true);
 	}
 }
 

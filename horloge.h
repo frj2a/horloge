@@ -50,8 +50,10 @@ private:
 	QAudioFormat			format;
 	QAudioOutput			* audio;
 	QAction					*action;
+	QAction					*actionDescanso;
 	QString					prov;
 	bool					utcTime;
+	bool					descanso;
 	bool					m_moving;
 	QPoint					m_prevMousePos;
 
@@ -63,6 +65,7 @@ slots:
 	void reposicionar(void);
 	void trocaVisibilidade(void);
 	void trocaLocalUTC(bool estado);
+	void trocaDescanso(bool estado);
 	void trocaVerHoraDigital(bool estado);
 	void trocaVerDataDigital(bool estado);
 	void trocaSensibMouse(bool estado);
