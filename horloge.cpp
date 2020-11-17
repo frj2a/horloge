@@ -472,7 +472,7 @@ void horloge::onTimer(void)	{
 	if (timeNow.minute() < 5) {
 		if (descanso) {
 			mDescanso->setVisible(true);
-			int deltaMinute = 5 - timeNow.minute();
+			int deltaMinute = 4 - timeNow.minute();
 			int deltaSecond = 59 - timeNow.second();
 			mDescanso->setText(QString("%1:%2").arg(deltaMinute, 2, 10, QChar('0')).arg(deltaSecond, 2, 10, QChar('0')));
 			audioFile.open(QIODevice::ReadOnly);
