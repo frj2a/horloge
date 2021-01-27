@@ -201,7 +201,7 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	gsPrincipal->addItem(secondsElipse);
 	*/
 
-	QString sToolTip(tr("Use o botão direito para abrir um menu de contexto."));
+    QString sToolTip(tr("Use o botão direito para abrir um menu de contexto.\n (%1 - V.%2 - %3 %4)").arg(APP_NAME).arg(APP_VERSION).arg(BUILD_DATE).arg(BUILD_HOUR));
 
 	mIcone = new QIcon(QPixmap(":/ico/ico"));
 	mTrayIcon = new QSystemTrayIcon(*mIcone, this);
