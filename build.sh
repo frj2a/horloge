@@ -8,16 +8,19 @@ QT_OTIMIZA="linux-g++"
 MAQUINA=`uname -m`
 if [ "$MAQUINA" = "x86_64" ]
 then
-		QT_OTIMIZA="linux-g++-64"
+	QT_OTIMIZA="linux-g++-64"
 fi
 echo -e - - -Compilando o programa '\033[1;33m'Horloge'\033[0m', um relógio transparente até para eventos, para a plataforma '\033[1;33m'$MAQUINA'\033[0m' ...
 
-lrelease -qt=qt5 horloge.pro 2> /dev/null
+lrelease -qt=qt5 horloge.pro 1> /dev/null 2> /dev/null
 
-cat Doxyfile.linux | sed s/"PROJECT_NUMBER[\ ]*= "/"PROJECT_NUMBER         = "`qmake -qt=qt5 -r -spec $QT_OTIMIZA "CONFIG-=debug_and_release release debug" "CONFIG+=release" 2>&1 | grep "Project MESSAGE:" | cut -d\  -f5`/ > Doxyfile && /usr/bin/make qmake_all
+VER="PROJECT_NUMBER         = "`qmake -r -spec $QT_OTIMIZA "CONFIG-=debug_and_release release debug" "CONFIG+=release" 2>&1 | grep "Project MESSAGE:" | cut -d\  -f5`
+PROJECT_NUMBER=`echo $VER | sed -e s/\ /\\\\\\\\\ /g -e  s-/-\\\\\\\/-g`
+qmake -r -spec $QT_OTIMIZA "CONFIG-=debug_and_release release debug" "CONFIG+=release" 1> /dev/null 2> /dev/null
+cat Doxyfile.linux | sed s/"PROJECT_NUMBER[\ ]*=\ "/"$PROJECT_NUMBER"/ > Doxyfile && /usr/bin/make qmake_all 1> /dev/null 2> /dev/null
 
-make $MAKEOPTS -s && \
-strip -s release/horloge
+/usr/bin/make $MAKEOPTS -s && \
+strip -s horloge
 
 rm -fR GeneratedFiles debug *.qm .qmake.stash
 if [ -e /usr/bin/doxygen ]
