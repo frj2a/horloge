@@ -12,9 +12,9 @@ QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-REV_MAJOR_CODE = 0
-REV_MINOR_CODE = 9
-REV_PATCH_CODE = 3
+VER_MAJ = 0
+VER_MIN = 9
+VER_PAT = 3
 PROJECT_DIR=$$PWD
 include (../QtBaseGeral/base_geral.pri)
 
@@ -49,7 +49,7 @@ FORMS += \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+else: unix:!android: target.path = $$[_PRO_FILE_PWD_]
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \

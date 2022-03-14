@@ -13,6 +13,12 @@ QHash<QString, QTranslator*> CApplication::mTranslators;
 CApplication::CApplication(int &argc, char **argv) : QApplication(argc, argv ) {
 	// note a forma de acesso ao "argc", por referência e não por cópia; ver documentação!
 	// http://qt-project.org/doc/qt-4.8/qapplication.html#QApplication
+
+    setApplicationVersion(APP_VERSION);
+    setApplicationName(APP_NAME);
+    setProperty("BUILD_HOUR", BUILD_HOUR);
+    setProperty("BUILD_DATE", BUILD_DATE);
+    setProperty("ARCH", ARCH);
 }
 
 void CApplication::setSession(QWidget * session)	{
