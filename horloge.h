@@ -16,7 +16,9 @@
 #include <QSystemTrayIcon>
 #include <QGraphicsPathItem>
 #include <QGraphicsProxyWidget>
+#if defined (DESCANSO)
 #include <QAudioOutput>
+#endif
 
 class horloge : public QWidget, private Ui::horloge {
 	Q_OBJECT
@@ -42,18 +44,23 @@ private:
 	QGraphicsPathItem		* gpiSegundo;
 	QLabel					* mHoraDigital;
 	QLabel					* mDataDigital;
+#if defined (DESCANSO)
 	QLabel					* mDescanso;
+#endif
 	QGraphicsProxyWidget	* mProxyWidgetHora;
 	QGraphicsProxyWidget	* mProxyWidgetData;
+#if defined (DESCANSO)
 	QGraphicsProxyWidget	* mProxyWidgetDescanso;
 	QFile					audioFile;
 	QAudioFormat			format;
 	QAudioOutput			* audio;
-	QAction					*action;
 	QAction					*actionDescanso;
+    bool                    audioActive;
+	bool					descanso;
+#endif
+	QAction					*action;
 	QString					prov;
 	bool					utcTime;
-	bool					descanso;
 	bool					m_moving;
 	QPoint					m_prevMousePos;
 
@@ -65,13 +72,17 @@ slots:
 	void reposicionar(void);
 	void trocaVisibilidade(void);
 	void trocaLocalUTC(bool estado);
+#if defined (DESCANSO)
 	void trocaDescanso(bool estado);
+#endif
 	void trocaVerHoraDigital(bool estado);
 	void trocaVerDataDigital(bool estado);
 	void trocaSensibMouse(bool estado);
 	__attribute__((noreturn)) void leave();
 	void trayAtivado(QSystemTrayIcon::ActivationReason reason);
+#if defined (DESCANSO)
 	void handleStateChanged(QAudio::State newState);
+#endif
 
 protected:
 	void changeEvent(QEvent *e);

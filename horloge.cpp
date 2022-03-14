@@ -27,12 +27,16 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	mArgC = argc;
 	mArgV = argv;
 	m_moving = false;
+#if defined(DESCANSO)
 	audio = nullptr;
+#endif
 	m_prevMousePos = QPoint();
 	installEventFilter(this);
 
 	utcTime = false;
+#if defined(DESCANSO)
 	descanso = true;
+#endif
 
 	setAttribute(Qt::WA_TranslucentBackground, true);
 	// setAttribute(Qt::WA_DeleteOnClose, true);
@@ -52,7 +56,10 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	QFontDatabase::addApplicationFont(":/fontes/LEDBDREV.TTF");
 	QFontDatabase::addApplicationFont(":/fontes/LEDBOARD.TTF");
 
+#if defined(DESCANSO)
 	audioFile.setFileName(":/audio/audio.raw");
+	audio = nullptr;
+	audioActive = false;
 
 	// Set up the format, eg.
 	format.setSampleRate(8000);
@@ -64,9 +71,11 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 
 	QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
 	if (!info.isFormatSupported(format)) {
+		// QStringList lista = info.supportedCodecs();
 		qWarning() << "Raw audio format not supported by backend, cannot play audio.";
 		return;
 	}
+#endif
 
 	gsPrincipal = new QGraphicsScene(0, 0, 256, 256, this);
 	gvPrincipal->setScene(gsPrincipal);
@@ -106,6 +115,7 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 		gsPrincipal->addItem(marca);
 	}
 
+#if defined (DESCANSO)
 	mDescanso = new QLabel("00:00");
 	mDescanso->setFont(QFont("Digital Readout Expanded", 20));
 	mDescanso->setStyleSheet("color: rgb(31, 31, 31); background-color: rgba(191, 31, 31, 127);");
@@ -113,6 +123,7 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	mProxyWidgetDescanso->setPos(127.0 - mProxyWidgetDescanso->size().width() / 2 , 127.0 - 28);
 	mProxyWidgetDescanso->setOpacity(OPACIDADE_DIGITOS);
 	mDescanso->setVisible(false);
+#endif
 
 	mHoraDigital = new QLabel("00:00:00");
 	// mHoraDigital->setFont(QFont("LED BOARD REVERSED", 12));
@@ -214,14 +225,20 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 
 	action = new QAction(tr("&Exibir/Ocultar"), mTrayIcon);
 	connect(action, &QAction::triggered, this, &horloge::trocaVisibilidade);
+	// addAction(action);
+
 	trayIconMenu->addAction(action);
 
 	action = new QAction(tr("&UTC"), mTrayIcon);
 	action->setCheckable(true);
 	connect(action, &QAction::toggled, this, &horloge::trocaLocalUTC);
+	// addAction(action);
+
 	trayIconMenu->addAction(action);
 
 	action = new QAction(tr("&Digitais"), mTrayIcon);
+	// addAction(action);
+
 	QMenu * subMenu = new QMenu;
 	action->setMenu(subMenu);
 	trayIconMenu->addAction(action);
@@ -238,11 +255,13 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	connect(action, &QAction::toggled, this, &horloge::trocaVerDataDigital);
 	subMenu->addAction(action);
 
+#if defined(DESCANSO)
 	actionDescanso = new QAction(tr("&Descanso horário"), action);
 	actionDescanso->setCheckable(true);
 	actionDescanso->setChecked(true);
 	connect(actionDescanso, &QAction::toggled, this, &horloge::trocaDescanso);
 	subMenu->addAction(actionDescanso);
+#endif
 
 	action = new QAction(tr("&Permite mover"), mTrayIcon);
 	action->setCheckable(true);
@@ -400,9 +419,11 @@ void horloge::trocaLocalUTC(bool estado) {
 	onTimer();
 }
 
+#if defined(DESCANSO)
 void horloge::trocaDescanso(bool estado) {
 	descanso = estado;
 }
+#endif
 
 void horloge::trocaVerHoraDigital(bool estado) {
 	mHoraDigital->setVisible(estado);
@@ -467,18 +488,27 @@ void horloge::onTimer(void)	{
 #endif
 	mHoraDigital->setText(timeNow.toString("hh:mm:ss"));
 	mDataDigital->setText(dateNow.toString("dd.MM.yy"));
+#if defined(DESCANSO)
+#define REST_START  (0)
+#define REST_END    (REST_START + 5)
 
-	// if ( ( timeNow.minute() >= 20 ) && ( timeNow.minute() < 25 ) ) {
-	if (timeNow.minute() < 5) {
+	if ( ( timeNow.minute() >= REST_START ) && ( timeNow.minute() < REST_END ) ) {
 		if (descanso) {
 			mDescanso->setVisible(true);
-			int deltaMinute = 5 - timeNow.minute();
+			int deltaMinute = REST_END - timeNow.minute();
 			int deltaSecond = 59 - timeNow.second();
 			mDescanso->setText(QString("%1:%2").arg(deltaMinute, 2, 10, QChar('0')).arg(deltaSecond, 2, 10, QChar('0')));
-			audioFile.open(QIODevice::ReadOnly);
-			audio = new QAudioOutput(format, this);
-			connect(audio, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));
-			audio->start(&audioFile);
+			if (!audioActive) {
+				audioFile.open(QIODevice::ReadOnly);
+				// audioFile.reset();
+				if (audioFile.isOpen()) {
+					audio = new QAudioOutput(format, this);
+					connect(audio, SIGNAL(stateChanged(QAudio::State)), this, SLOT(handleStateChanged(QAudio::State)));
+					// std::cout << "começando  >" << timeNow.toString("hh:mm:ss.zzz").toStdString() << std::endl;
+					audio->start(&audioFile);
+					audioActive = true;
+				}
+			}
 		} else {
 			mDescanso->setVisible(false);
 		}
@@ -487,31 +517,66 @@ void horloge::onTimer(void)	{
 		descanso = true;
 		actionDescanso->setChecked(true);
 	}
+#endif
 }
 
 
-void horloge::handleStateChanged(QAudio::State newState)
-{
+#if defined(DESCANSO)
+void horloge::handleStateChanged(QAudio::State newState) {
 	switch (newState) {
-		case QAudio::IdleState:
+		case QAudio::IdleState: {
+			std::cout << "IdleState" << std::endl;
 			// Finished playing (no more data)
 			// audio->stop();
-			audioFile.close();
-			delete audio;
+			// QTime timeNow = QTime::currentTime();
+			// std::cout << "terminando <" << timeNow.toString("hh:mm:ss.zzz").toStdString() << std::endl;
+			if (audioActive) {
+				// audio->stop();
+			}
+			if (audio != nullptr) {
+				audioFile.close();
+				delete audio;
+				audio = nullptr;
+			}
+			audioActive = false;
 			break;
-
-		case QAudio::StoppedState:
+		}
+		case QAudio::StoppedState: {
+			audioActive = false;
+			// std::cout << "StoppedState" << std::endl;
 			// Stopped for other reasons
 			if (audio->error() != QAudio::NoError) {
 				// Error handling
 			}
+			audioFile.close();
+			if (audio != nullptr) {
+				delete audio;
+				audio = nullptr;
+			}
 			break;
-
-		default:
+		}
+		case QAudio::ActiveState: {
+			audioActive = true;
+			// std::cout << "ActiveState" << std::endl;
+			break;
+		}
+		case QAudio::SuspendedState: {
+			// std::cout << "SuspendedState" << std::endl;
+			break;
+		}
+		case QAudio::InterruptedState: {
+			audioActive = false;
+			// std::cout << "InterruptedState" << std::endl;
+			break;
+		}
+		default: {
+			// std::cout << "desconhecido" << std::endl;
 			// ... other cases as appropriate
 			break;
+		}
 	}
 }
+#endif
 
 
 /*
