@@ -21,82 +21,84 @@
 #endif
 
 class horloge : public QWidget, private Ui::horloge {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit horloge(int argc, char* argv[], QWidget *parent = nullptr);
-	~horloge();
+    explicit horloge(int argc, char* argv[], QWidget *parent = nullptr);
+    ~horloge();
 
-	QSize sizeHint() const;
-	bool eventFilter(QObject *watched, QEvent *event);
+    QSize sizeHint() const;
+    bool eventFilter(QObject *watched, QEvent *event);
 
 private:
-	Qt::WindowFlags			mFlags;
-	int						mArgC;							//!< Quantidade de parâmetros de linha de comando.
-	char**					mArgV;							//!< Ponteiro para a sequência de parâmetros de linha de comando.
-	QIcon					*mIcone;
-	QPointer<QSystemTrayIcon> mTrayIcon;
-	QString					* mToolTip;
-	QTimer					* mTimer;
-	QScreen					* mScreen;
-	QGraphicsPathItem		* gpiHora;
-	QGraphicsPathItem		* gpiMinuto;
-	QGraphicsPathItem		* gpiSegundo;
-	QLabel					* mHoraDigital;
-	QLabel					* mDataDigital;
+    Qt::WindowFlags			mFlags;
+    int						mArgC;							//!< Quantidade de parâmetros de linha de comando.
+    char**					mArgV;							//!< Ponteiro para a sequência de parâmetros de linha de comando.
+    QIcon					*mIcone;
+    QPointer<QSystemTrayIcon> mTrayIcon;
+    QString					* mToolTip;
+    QTimer					* mTimer;
+    QScreen					* mScreen;
+    QGraphicsPathItem		* gpiHora;
+    QGraphicsPathItem		* gpiMinuto;
+    QGraphicsPathItem		* gpiSegundo;
+    QLabel					* mHoraDigital;
+    QLabel					* mDataDigital;
 
 #if defined(DESCANSO)
-	QLabel					* mDescanso;
+    QLabel					* mDescanso;
     QGraphicsProxyWidget	* mProxyWidgetDescanso;
 #endif
 
     QGraphicsProxyWidget	* mProxyWidgetHora;
-	QGraphicsProxyWidget	* mProxyWidgetData;
-	QFile					audioFile;
+    QGraphicsProxyWidget	* mProxyWidgetData;
+    QFile					audioFile;
     QString					prov;
+#if defined(DESCANSO)
     QAudioFormat			format;
-	QAudioOutput			* audio;
-	QAction					*action;
+    QAudioOutput			* audio;
+#endif
+    QAction					*action;
 
 #if defined(DESCANSO)
-	QAction					*actionDescanso;
+    QAction					*actionDescanso;
     bool					descanso;
 #endif
 
     bool					utcTime;
-	bool					m_moving;
-	QPoint					m_prevMousePos;
+    bool					m_moving;
+    QPoint					m_prevMousePos;
 
 
 private
 slots:
-	void onTimer(void);
-	void home(const QRect & deskArea);
-	void reposicionar(void);
-	void trocaVisibilidade(void);
-	void trocaLocalUTC(bool estado);
+    void onTimer(void);
+    void home(const QRect & deskArea);
+    void reposicionar(void);
+    void trocaVisibilidade(void);
+    void trocaLocalUTC(bool estado);
 
 #if defined(DESCANSO)
-	void trocaDescanso(bool estado);
+    void trocaDescanso(bool estado);
 #endif
 
-	void trocaVerHoraDigital(bool estado);
-	void trocaVerDataDigital(bool estado);
-	void trocaSensibMouse(bool estado);
-	__attribute__((noreturn)) void leave();
-	void trayAtivado(QSystemTrayIcon::ActivationReason reason);
+    void trocaVerHoraDigital(bool estado);
+    void trocaVerDataDigital(bool estado);
+    void trocaSensibMouse(bool estado);
+    __attribute__((noreturn)) void leave();
+    void trayAtivado(QSystemTrayIcon::ActivationReason reason);
 
 #if defined(DESCANSO)
     void handleStateChanged(QAudio::State newState);
 #endif
 
 protected:
-	void changeEvent(QEvent *e);
-	void retranslateMenus();
-	void translateAction(QAction * act);
+    void changeEvent(QEvent *e);
+    void retranslateMenus();
+    void translateAction(QAction * act);
 
 private:
-	QGraphicsScene * gsPrincipal;
+    QGraphicsScene * gsPrincipal;
 };
 
 #endif // HORLOGE_H
