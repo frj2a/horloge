@@ -35,14 +35,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++11
 
+# DEFINES += DESCANSO
+
 SOURCES += \
 		main.cpp \
 		CApplication.cpp \
-		horloge.cpp
+		horloge.cpp \
+		runguard.cpp
 
 HEADERS += \
 		CApplication.h \
-		horloge.h
+		horloge.h \
+		runguard.h
 
 FORMS += \
 		horloge.ui

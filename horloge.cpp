@@ -24,7 +24,7 @@
 #define OPACIDADE_DIGITOS	0.40
 
 horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Dialog | Qt::Tool  /* | Qt::SplashScreen */ ) {
-	mArgC = argc;
+    mArgC = argc;
 	mArgV = argv;
 	m_moving = false;
 	audio = nullptr;
@@ -32,7 +32,10 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	installEventFilter(this);
 
 	utcTime = false;
+
+#if defined(DESCANSO)
 	descanso = true;
+#endif
 
 	setAttribute(Qt::WA_TranslucentBackground, true);
 	// setAttribute(Qt::WA_DeleteOnClose, true);
@@ -106,13 +109,15 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 		gsPrincipal->addItem(marca);
 	}
 
-	mDescanso = new QLabel("00:00");
+#if defined(DESCANSO)
+    mDescanso = new QLabel("00:00");
 	mDescanso->setFont(QFont("Digital Readout Expanded", 20));
 	mDescanso->setStyleSheet("color: rgb(31, 31, 31); background-color: rgba(191, 31, 31, 127);");
 	mProxyWidgetDescanso = gsPrincipal->addWidget(mDescanso);
 	mProxyWidgetDescanso->setPos(127.0 - mProxyWidgetDescanso->size().width() / 2 , 127.0 - 28);
 	mProxyWidgetDescanso->setOpacity(OPACIDADE_DIGITOS);
 	mDescanso->setVisible(false);
+#endif
 
 	mHoraDigital = new QLabel("00:00:00");
 	// mHoraDigital->setFont(QFont("LED BOARD REVERSED", 12));
@@ -238,11 +243,13 @@ horloge::horloge(int argc, char* argv[], QWidget *parent) : QWidget(parent, Qt::
 	connect(action, &QAction::toggled, this, &horloge::trocaVerDataDigital);
 	subMenu->addAction(action);
 
-	actionDescanso = new QAction(tr("&Descanso horário"), action);
+#if defined(DESCANSO)
+    actionDescanso = new QAction(tr("&Descanso horário"), action);
 	actionDescanso->setCheckable(true);
 	actionDescanso->setChecked(true);
 	connect(actionDescanso, &QAction::toggled, this, &horloge::trocaDescanso);
 	subMenu->addAction(actionDescanso);
+#endif
 
 	action = new QAction(tr("&Permite mover"), mTrayIcon);
 	action->setCheckable(true);
@@ -400,9 +407,11 @@ void horloge::trocaLocalUTC(bool estado) {
 	onTimer();
 }
 
+#if defined(DESCANSO)
 void horloge::trocaDescanso(bool estado) {
 	descanso = estado;
 }
+#endif
 
 void horloge::trocaVerHoraDigital(bool estado) {
 	mHoraDigital->setVisible(estado);
@@ -468,7 +477,7 @@ void horloge::onTimer(void)	{
 	mHoraDigital->setText(timeNow.toString("hh:mm:ss"));
 	mDataDigital->setText(dateNow.toString("dd.MM.yy"));
 
-	// if ( ( timeNow.minute() >= 20 ) && ( timeNow.minute() < 25 ) ) {
+#if defined(DESCANSO)
 	if (timeNow.minute() < 5) {
 		if (descanso) {
 			mDescanso->setVisible(true);
@@ -487,9 +496,10 @@ void horloge::onTimer(void)	{
 		descanso = true;
 		actionDescanso->setChecked(true);
 	}
+#endif
 }
 
-
+#if defined(DESCANSO)
 void horloge::handleStateChanged(QAudio::State newState)
 {
 	switch (newState) {
@@ -512,7 +522,7 @@ void horloge::handleStateChanged(QAudio::State newState)
 			break;
 	}
 }
-
+#endif
 
 /*
 void horloge::slotMudouIdioma(qint32 codIdioma) {

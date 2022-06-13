@@ -42,18 +42,26 @@ private:
 	QGraphicsPathItem		* gpiSegundo;
 	QLabel					* mHoraDigital;
 	QLabel					* mDataDigital;
+
+#if defined(DESCANSO)
 	QLabel					* mDescanso;
-	QGraphicsProxyWidget	* mProxyWidgetHora;
+    QGraphicsProxyWidget	* mProxyWidgetDescanso;
+#endif
+
+    QGraphicsProxyWidget	* mProxyWidgetHora;
 	QGraphicsProxyWidget	* mProxyWidgetData;
-	QGraphicsProxyWidget	* mProxyWidgetDescanso;
 	QFile					audioFile;
-	QAudioFormat			format;
+    QString					prov;
+    QAudioFormat			format;
 	QAudioOutput			* audio;
 	QAction					*action;
+
+#if defined(DESCANSO)
 	QAction					*actionDescanso;
-	QString					prov;
-	bool					utcTime;
-	bool					descanso;
+    bool					descanso;
+#endif
+
+    bool					utcTime;
 	bool					m_moving;
 	QPoint					m_prevMousePos;
 
@@ -65,13 +73,20 @@ slots:
 	void reposicionar(void);
 	void trocaVisibilidade(void);
 	void trocaLocalUTC(bool estado);
+
+#if defined(DESCANSO)
 	void trocaDescanso(bool estado);
+#endif
+
 	void trocaVerHoraDigital(bool estado);
 	void trocaVerDataDigital(bool estado);
 	void trocaSensibMouse(bool estado);
 	__attribute__((noreturn)) void leave();
 	void trayAtivado(QSystemTrayIcon::ActivationReason reason);
-	void handleStateChanged(QAudio::State newState);
+
+#if defined(DESCANSO)
+    void handleStateChanged(QAudio::State newState);
+#endif
 
 protected:
 	void changeEvent(QEvent *e);
