@@ -16,7 +16,9 @@
 #include <QSystemTrayIcon>
 #include <QGraphicsPathItem>
 #include <QGraphicsProxyWidget>
+#if defined (DESCANSO)
 #include <QAudioOutput>
+#endif
 
 class horloge : public QWidget, private Ui::horloge {
 	Q_OBJECT
